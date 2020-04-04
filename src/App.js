@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Line from "./components/Line";
+import Footer from "./components/Footer";
+import Search from "./components/Search";
+import emojiesList from "./components/emojies.json";
+import "./App.css";
 
 function App() {
+  const [result, setResult] = useState(emojiesList);
+
+  const searchResult = (event) => {
+    let results = [];
+    for (let i = 0; i < emojiesList.length; i++) {
+      if (
+        emojiesList[i].keywords.indexOf(event.target.value.toLowerCase()) !== -1
+      ) {
+        if (results.length >= 20) break;
+        else results.push(emojiesList[i]);
+      }
+    }
+    setResult(results);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Search searchResult={searchResult} />
+
+      {result.map((emoji, i) => {
+        return <Line key={emoji.title} {...emoji} />;
+      })}
+
+      <Footer />
     </div>
   );
 }
